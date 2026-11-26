@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindQuest | Number Guessing Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/guessing.js" defer></script>
+</head>
+<body>
+
+    <!-- Navigation between the two games -->
+    <header class="site-header">
+        <nav class="navbar" aria-label="Main navigation">
+            <a href="index.html" class="logo">MindQuest</a>
+
+            <div class="nav-links">
+                <a href="index.html" class="active" aria-current="page">
+                    Guessing Game
+                </a>
+                <a href="memory.html">Memory Game</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <section class="intro">
+            <span class="tag">PART A</span>
+            <h1>Number Guessing Game</h1>
+            <p>
+                Challenge yourself to find the secret number
+                between 1 and 100 before you run out of guesses.
+            </p>
+        </section>
+
+        <section class="game-panel" aria-label="Number guessing game">
+
+            <!-- Clock and sound controls -->
+            <div class="game-toolbar">
+                <div class="clock-box">
+                    <span class="small-label">Clock</span>
+                    <span id="clock">--:--:--</span>
+                </div>
+
+                <button type="button" id="sound-toggle"
+                        class="secondary-button" aria-pressed="true">
+                    Sound: On
+                </button>
+            </div>
+
+            <!-- Game statistics are updated using JavaScript -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="small-label">Guesses Left</span>
+                    <strong id="guesses-left">10</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="small-label">Wins</span>
+                    <strong id="wins">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="small-label">Rounds</span>
+                    <strong id="rounds">0</strong>
+                </div>
+            </div>
+
+            <div class="guess-area">
+                <h2>Can you find the secret number?</h2>
+
+                <p id="difficulty-message">
+                    Current difficulty: Normal
+                </p>
+
+                <!-- Using a form allows the player to press Enter -->
+                <form id="guess-form" novalidate>
+                    <label for="guess-input">
+                        Enter a number between 1 and 100
+                    </label>
+
+                    <div class="input-group">
+                        <input
+                            type="number"
+                            id="guess-input"
+                            min="1"
+                            max="100"
+                            step="1"
+                            placeholder="Your guess"
+                            required
+                        >
+
+                        <button type="submit" class="primary-button">
+                            Guess
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Feedback is announced to screen-reader users -->
+                <div id="feedback" class="feedback"
+                     role="status" aria-live="polite">
+                    Take a guess to begin.
+                </div>
+
+                <button type="button" id="restart-button"
+                        class="secondary-button">
+                    New Game
+                </button>
+            </div>
+
+            <section class="history-section">
+                <h2>Guess History</h2>
+                <p id="empty-history">No guesses yet.</p>
+                <ol id="guess-history" class="guess-history"></ol>
+            </section>
+
+        </section>
+
+        <section class="information-panel">
+            <h2>How to Play</h2>
+
+            <ol>
+                <li>Enter a whole number between 1 and 100.</li>
+                <li>Use the feedback to narrow down your next guess.</li>
+                <li>Find the secret number before your guesses run out.</li>
+                <li>A new round begins after you win or lose.</li>
+            </ol>
+
+            <p>
+                Invalid entries do not reduce your remaining guesses.
+                However, repeated valid guesses still count.
+            </p>
+        </section>
+
+        <!-- Players will earn badges as they complete milestones -->
+        <section class="information-panel">
+            <h2>Achievements</h2>
+
+            <div id="achievements" class="achievement-grid">
+                <p>No achievements unlocked yet.</p>
+            </div>
+        </section>
+
+        <section class="next-game">
+            <h2>Ready for another challenge?</h2>
+            <p>Test your memory in the picture matching game.</p>
+            <a href="memory.html" class="primary-button">
+                Play Memory Game
+            </a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>MindQuest | CSC 6370 — Web Programming</p>
+        <p>Assignment 04 — JavaScript | Fall 2026</p>
+    </footer>
+
+</body>
+</html>
