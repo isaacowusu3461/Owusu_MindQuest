@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 100">
+        
+        <path d="M50 18 C30 18 40 45 20 60
+                 C0 100 100 100 80 60
+                 C60 45 70 18 50 18"
+              fill="#84cc16"/>
+        <path d="M50 22 L56 7" stroke="#78350f"
+              stroke-width="6" stroke-linecap="round"/>
+        <ellipse cx="68" cy="12" rx="13" ry="6"
+                 fill="#15803d"/>
+    
+    </svg>
