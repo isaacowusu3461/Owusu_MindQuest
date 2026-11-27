@@ -9,6 +9,8 @@ const guessHistory = document.getElementById("guess-history");
 const emptyHistory = document.getElementById("empty-history");
 const restartButton = document.getElementById("restart-button");
 const guessButton = guessForm.querySelector("button[type='submit']");
+const clockDisplay = document.getElementById("clock");
+const soundToggle = document.getElementById("sound-toggle");
 
 // Store the current state of the game.
 const MIN_NUMBER = 1;
@@ -22,6 +24,177 @@ let wins = 0;
 let rounds = 0;
 let gameActive = false;
 let restartTimer = null;
+
+// Store the sound settings and audio context.
+let soundEnabled = true;
+let audioContext = null;
+
+// Load the player's saved sound preference.
+function loadSoundPreference() {
+    try {
+        const savedPreference = localStorage.getItem(
+            "mindquest_sound"
+        );
+
+        if (savedPreference !== null) {
+            soundEnabled = savedPreference === "true";
+        }
+    } catch (error) {
+        console.warn("Could not load sound preference.", error);
+    }
+
+    updateSoundButton();
+}
+
+// Save the sound preference for future visits.
+function saveSoundPreference() {
+    try {
+        localStorage.setItem(
+            "mindquest_sound",
+            String(soundEnabled)
+        );
+    } catch (error) {
+        console.warn("Could not save sound preference.", error);
+    }
+}
+
+// Update the sound button based on the current setting.
+function updateSoundButton() {
+    soundToggle.textContent = soundEnabled
+        ? "Sound: On"
+        : "Sound: Off";
+
+    soundToggle.setAttribute(
+        "aria-pressed",
+        String(soundEnabled)
+    );
+}
+
+// Display the current local time.
+function updateClock() {
+    const now = new Date();
+
+    clockDisplay.textContent = now.toLocaleTimeString(
+        "en-US",
+        {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        }
+    );
+}
+
+// Create the audio context only after a user interaction.
+// Some browsers block audio that starts automatically.
+async function initializeAudio() {
+    try {
+        if (!audioContext) {
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
+
+            if (!AudioContextClass) {
+                return false;
+            }
+
+            audioContext = new AudioContextClass();
+        }
+
+        if (audioContext.state === "suspended") {
+            await audioContext.resume();
+        }
+
+        return audioContext.state === "running";
+    } catch (error) {
+        console.warn("Audio is unavailable.", error);
+        return false;
+    }
+}
+
+// Generate a short tone without using an external audio file.
+function playTone(frequency, duration, delay = 0, type = "sine") {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    const startTime = audioContext.currentTime + delay;
+    const endTime = startTime + duration;
+
+    oscillator.type = type;
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        startTime
+    );
+
+    // Keep the sound at a comfortable volume.
+    gainNode.gain.setValueAtTime(0.12, startTime);
+
+    // Fade out the sound to avoid an abrupt ending.
+    gainNode.gain.exponentialRampToValueAtTime(
+        0.001,
+        endTime
+    );
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(startTime);
+    oscillator.stop(endTime);
+
+    // Disconnect the audio nodes after the tone finishes.
+    oscillator.onended = function () {
+        oscillator.disconnect();
+        gainNode.disconnect();
+    };
+}
+
+// Play different sounds depending on the player's action.
+async function playSound(type) {
+    if (!soundEnabled) {
+        return;
+    }
+
+    const audioReady = await initializeAudio();
+
+    if (!audioReady || !soundEnabled) {
+        return;
+    }
+
+    switch (type) {
+        case "correct":
+            // Play an ascending sound when the player wins.
+            playTone(523, 0.15, 0);
+            playTone(659, 0.15, 0.15);
+            playTone(784, 0.25, 0.30);
+            break;
+
+        case "incorrect":
+            // A short tone for an incorrect guess.
+            playTone(330, 0.15);
+            break;
+
+        case "invalid":
+            // Two short tones for invalid input.
+            playTone(220, 0.10, 0);
+            playTone(220, 0.10, 0.15);
+            break;
+
+        case "loss":
+            // Play a descending sound when the round is lost.
+            playTone(392, 0.18, 0);
+            playTone(294, 0.18, 0.18);
+            playTone(196, 0.30, 0.36);
+            break;
+
+        case "restart":
+            playTone(440, 0.12);
+            playTone(587, 0.15, 0.12);
+            break;
+
+        case "toggle":
+            playTone(660, 0.12);
+            break;
+    }
+}
 
 // Generate a random whole number between 1 and 100.
 function generateSecretNumber() {
@@ -100,12 +273,16 @@ function endGame(won) {
             "A new round will begin in 3 seconds.",
             "success"
         );
+
+        playSound("correct");
     } else {
         showFeedback(
             `Game over! The secret number was ${secretNumber}. ` +
             "A new round will begin in 3 seconds.",
             "error"
         );
+
+        playSound("loss");
     }
 
     updateStats();
@@ -178,6 +355,9 @@ function handleGuess(event) {
     if (!validation.valid) {
         guessInput.setAttribute("aria-invalid", "true");
         showFeedback(validation.message, "error");
+
+        playSound("invalid");
+
         guessInput.focus();
         return;
     }
@@ -222,6 +402,8 @@ function handleGuess(event) {
         return;
     }
 
+    playSound("incorrect");
+
     // Clear the input so the player can enter another guess.
     guessInput.value = "";
     guessInput.focus();
@@ -238,6 +420,8 @@ restartButton.addEventListener("click", function () {
         "A new game has started. Enter your first guess."
     );
 
+    playSound("restart");
+
     guessInput.focus();
 });
 
@@ -245,6 +429,25 @@ restartButton.addEventListener("click", function () {
 guessInput.addEventListener("input", function () {
     guessInput.removeAttribute("aria-invalid");
 });
+
+// Allow the player to enable or disable sound effects.
+soundToggle.addEventListener("click", function () {
+    soundEnabled = !soundEnabled;
+
+    updateSoundButton();
+    saveSoundPreference();
+
+    if (soundEnabled) {
+        playSound("toggle");
+    }
+});
+
+// Load the saved sound setting when the page opens.
+loadSoundPreference();
+
+// Display the clock immediately and update it every second.
+updateClock();
+setInterval(updateClock, 1000);
 
 // Initialize the game when the page loads.
 startNewGame();
