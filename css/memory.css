@@ -1,0 +1,253 @@
+/* Give the memory game more space for the card board. */
+.memory-container {
+    width: min(1050px, 94%);
+}
+
+/* Game setup controls */
+.setup-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-field label {
+    font-weight: bold;
+}
+
+.form-field select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.muted-text {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Statistics for the memory game */
+.memory-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.memory-stats .stat-card strong {
+    font-variant-numeric: tabular-nums;
+}
+
+#time-left.overtime {
+    color: var(--error);
+}
+
+/* Memory game board */
+.board-wrapper {
+    width: 100%;
+    margin: 24px auto;
+}
+
+.memory-board {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 10px;
+}
+
+.memory-board td {
+    padding: 0;
+}
+
+/* Each card is a button so it supports keyboard navigation. */
+.memory-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: 8px;
+    overflow: hidden;
+    background-color: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    color: var(--accent);
+    font-size: clamp(16px, 3vw, 30px);
+    font-weight: bold;
+    transition: background-color 0.2s,
+                border-color 0.2s,
+                transform 0.2s;
+}
+
+.memory-card:hover:not(:disabled) {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+/* Keep disabled preview cards visible. */
+.memory-card:disabled {
+    opacity: 1;
+    cursor: default;
+}
+
+.memory-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* These classes will be used when the game becomes interactive. */
+.memory-card.flipped {
+    background-color: var(--background);
+    border-color: var(--accent);
+}
+
+.memory-card.matched {
+    background-color: var(--background);
+    border-color: var(--success);
+}
+
+.memory-card.mismatch {
+    border-color: var(--error);
+}
+
+.phase-label {
+    color: var(--muted);
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Leaderboard layout */
+.leaderboard-wrapper {
+    overflow-x: auto;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.leaderboard-table th {
+    background-color: var(--surface);
+    color: var(--accent);
+}
+
+.leaderboard-table td:last-child,
+.leaderboard-table th:last-child {
+    text-align: right;
+}
+
+.leaderboard-table td[colspan] {
+    text-align: center;
+    color: var(--muted);
+}
+
+/* Scoring rules */
+.scoring-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.scoring-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: var(--surface);
+    text-align: center;
+}
+
+.scoring-card strong {
+    font-size: 28px;
+}
+
+.scoring-card span {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.positive-points {
+    color: var(--success);
+}
+
+.negative-points {
+    color: var(--error);
+}
+
+/* Adjust the board and controls for smaller screens. */
+@media (max-width: 600px) {
+    .setup-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .memory-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .game-actions {
+        flex-direction: column;
+    }
+
+    .game-actions button {
+        width: 100%;
+    }
+
+    .memory-board {
+        border-spacing: 5px;
+    }
+
+    .memory-card {
+        padding: 4px;
+        border-radius: 7px;
+    }
+
+    .scoring-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px;
+    }
+}
+
+/* Avoid unnecessary animations when reduced motion is enabled. */
+@media (prefers-reduced-motion: reduce) {
+    .memory-card {
+        transition: none;
+    }
+
+    .memory-card:hover:not(:disabled) {
+        transform: none;
+    }
+}

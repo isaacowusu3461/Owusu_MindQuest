@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindQuest | Memory Matching Game</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/memory.css">
+    <script src="js/memory.js" defer></script>
+</head>
+<body>
+
+    <!-- Navigation between the two games -->
+    <header class="site-header">
+        <nav class="navbar" aria-label="Main navigation">
+            <a href="index.html" class="logo">MindQuest</a>
+
+            <div class="nav-links">
+                <a href="index.html">Guessing Game</a>
+                <a href="memory.html" class="active" aria-current="page">
+                    Memory Game
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container memory-container">
+
+        <section class="intro">
+            <span class="tag">PART B</span>
+            <h1>Memory Matching Game</h1>
+            <p>
+                Memorize the pictures, find matching pairs,
+                and challenge yourself to achieve a high score.
+            </p>
+        </section>
+
+        <!-- Players choose their settings before starting -->
+        <section class="game-panel">
+            <h2>Game Setup</h2>
+
+            <div class="setup-grid">
+                <div class="form-field">
+                    <label for="difficulty">Difficulty</label>
+
+                    <select id="difficulty">
+                        <option value="easy">Easy — 8 seconds</option>
+                        <option value="normal" selected>
+                            Normal — 5 seconds
+                        </option>
+                        <option value="hard">Hard — 3 seconds</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="pair-count">Number of Pairs</label>
+
+                    <select id="pair-count">
+                        <option value="8">8 Pairs — 16 Cards</option>
+                        <option value="10">10 Pairs — 20 Cards</option>
+                        <option value="12">12 Pairs — 24 Cards</option>
+                    </select>
+                </div>
+            </div>
+
+            <p id="setup-description" class="muted-text">
+                Memorization: 5 seconds | Time limit: 120 seconds
+            </p>
+
+            <div class="game-actions">
+                <button type="button" id="start-game"
+                        class="primary-button">
+                    Start Game
+                </button>
+
+                <button type="button" id="restart-game"
+                        class="secondary-button" disabled>
+                    Restart Game
+                </button>
+            </div>
+        </section>
+
+        <section class="game-panel" aria-label="Memory matching game">
+
+            <!-- These statistics will change during the game -->
+            <div class="memory-stats">
+                <div class="stat-card">
+                    <span class="small-label">Time Left</span>
+                    <strong id="time-left">02:00</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="small-label">Score</span>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="small-label">Matched Pairs</span>
+                    <strong id="matched-pairs">0/8</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span class="small-label">Mistakes</span>
+                    <strong id="mistakes">0</strong>
+                </div>
+            </div>
+
+            <div id="memory-feedback" class="feedback"
+                 role="status" aria-live="polite">
+                Choose your settings and click Start Game.
+            </div>
+
+            <!-- JavaScript creates the cards inside this table -->
+            <div class="board-wrapper">
+                <table id="memory-board" class="memory-board"
+                       aria-label="Memory game cards">
+                    <tbody id="board-body"></tbody>
+                </table>
+            </div>
+
+            <p id="game-phase" class="phase-label">
+                Waiting to start
+            </p>
+        </section>
+
+        <!-- The leaderboard will display saved scores -->
+        <section class="information-panel">
+            <h2>Top 5 Leaderboard</h2>
+
+            <div class="leaderboard-wrapper">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Rank</th>
+                            <th scope="col">Player</th>
+                            <th scope="col">Score</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="leaderboard-body">
+                        <tr>
+                            <td colspan="3">No scores recorded yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="information-panel">
+            <h2>Achievements</h2>
+
+            <div id="achievements" class="achievement-grid">
+                <p>No achievements unlocked yet.</p>
+            </div>
+        </section>
+
+        <section class="information-panel">
+            <h2>How to Play</h2>
+
+            <ol>
+                <li>Select a difficulty and the number of pairs.</li>
+                <li>Click Start Game to reveal all the pictures.</li>
+                <li>Memorize the pictures before they become hidden.</li>
+                <li>Select two cards to find a matching pair.</li>
+                <li>Continue until every pair has been matched.</li>
+                <li>Enter your name to save a qualifying score.</li>
+            </ol>
+
+            <h2>Scoring Rules</h2>
+
+            <div class="scoring-grid">
+                <div class="scoring-card">
+                    <strong class="positive-points">+10</strong>
+                    <span>Successful match</span>
+                </div>
+
+                <div class="scoring-card">
+                    <strong class="negative-points">-5</strong>
+                    <span>Incorrect match</span>
+                </div>
+
+                <div class="scoring-card">
+                    <strong class="negative-points">-1</strong>
+                    <span>Per overtime second</span>
+                </div>
+            </div>
+
+            <p>
+                When the timer reaches zero, the game continues
+                in overtime until all pairs are matched.
+            </p>
+        </section>
+
+        <section class="next-game">
+            <h2>Try the Number Guessing Game</h2>
+            <p>Challenge your number guessing skills.</p>
+
+            <a href="index.html" class="primary-button">
+                Play Guessing Game
+            </a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>MindQuest | CSC 6370 — Web Programming</p>
+        <p>Assignment 04 — JavaScript | Fall 2026</p>
+    </footer>
+
+</body>
+</html>
